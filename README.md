@@ -28,10 +28,12 @@ opts = pyrocksdb.Options()
 opts.IncreaseParallelism()
 opts.OptimizeLevelStyleCompaction()
 opts.create_if_missing = True
-db.open(opts, '/path/to/db')
+s = db.open(opts, '/path/to/db')
+assert(s.ok())
 # put
 opts = pyrocksdb.WriteOptions()
-db.put(opts, "key1", "value1")
+s = db.put(opts, "key1", "value1")
+assert (s.ok())
 # get
 opts = pyrocksdb.ReadOptions()
 blob = db.get(opts, "key1")
@@ -39,6 +41,7 @@ print (blob.data) # value1
 print (blob.status.ok()) # true
 #delete
 opts = pyrocksdb.WriteOptions()
-db.delete(opts, "key1")
+s = db.delete(opts, "key1")
+assert(s.ok())
 db.close()
 ```
