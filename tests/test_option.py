@@ -40,3 +40,22 @@ def test_delete(db):
     opts = pyrocksdb.ReadOptions()
     blob = db.get(opts, "key1")
     assert not blob.status.ok()
+
+def test_iterator(db):
+    opts = pyrocksdb.WriteOptions()
+    s = {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
+    for k, v in s.items():
+        db.put(opts, k, v)
+
+    opts = pyrocksdb.ReadOptions()
+    it = db.iterator(opts)
+    it.seek_to_first()
+    assert it.valid()
+    for k, v in s.items():
+        assert it.key().data() == k
+        assert it.value().data() == v
+        it.next()
+
+    assert not it.valid()
+
+

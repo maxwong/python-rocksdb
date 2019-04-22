@@ -3,6 +3,7 @@
 #include <rocksdb/db.h>
 #include <rocksdb/status.h>
 #include <rocksdb/options.h>
+#include <rocksdb/iterator.h>
 #include <rocksdb/slice.h>
 #include <rocksdb/write_batch.h>
 
@@ -23,6 +24,7 @@ class py_DB {
     Blob Get(const ReadOptions& options, const std::string& key);
     Status Delete(const WriteOptions& options, const std::string& key);
     void Close();
+    std::unique_ptr<Iterator> NewIterator(const ReadOptions& options);
     //FIXME: python gc
     ~py_DB();
   private:

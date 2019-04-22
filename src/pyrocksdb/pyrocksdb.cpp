@@ -51,12 +51,20 @@ Status py_DB::Delete(const WriteOptions& options, const std::string& key) {
   return db_ptr->Delete(options, db_ptr->DefaultColumnFamily(), key);
 }
 
+std::unique_ptr<Iterator> py_DB::NewIterator(const ReadOptions& options) {
+  if (db_ptr == nullptr) {
+    throw std::invalid_argument("db has been closed");
+  }
+  return std::unique_ptr<Iterator>(db_ptr->NewIterator(options));
+}
+
 
 void init_db(py::module &);
 void init_option(py::module &);
 void init_slice(py::module &);
 void init_status(py::module &);
 void init_write_batch(py::module &);
+void init_iterator(py::module &);
 
 PYBIND11_MODULE(pyrocksdb, m) {
     // optional module docstring
@@ -66,6 +74,7 @@ PYBIND11_MODULE(pyrocksdb, m) {
   init_slice(m);
   init_status(m);
   init_write_batch(m);
+  init_iterator(m);
   py::class_<Blob>(m, "Blob")
     .def(py::init<>())
     .def_readwrite("status", &Blob::st)
