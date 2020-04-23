@@ -2240,6 +2240,7 @@ cdef class BaseIterator(object):
         self.db = db
         self.ptr = NULL
         self.handle = handle
+        print("Iterator created")
 
     def __dealloc__(self):
         print("Iterator released")
