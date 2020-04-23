@@ -2235,17 +2235,22 @@ cdef class BaseIterator(object):
     cdef iterator.Iterator* ptr
     cdef DB db
     cdef ColumnFamilyHandle handle
+    cdef size_t validHandlers
 
     def __cinit__(self, DB db, ColumnFamilyHandle handle = None):
         self.db = db
         self.ptr = NULL
         self.handle = handle
-        print("Iterator created")
+        self.validHandlers += 1
+        print("Iterator created %s" % (self.validHandlers))
+
 
     def __dealloc__(self):
-        print("Iterator released")
-        if not self.ptr == NULL:
-            del self.ptr
+       print("Iterator released %s" % (self.validHandlers))
+       if not self.ptr == NULL:
+           del self.ptr
+           self.validHandlers -= 1
+
 
     def __iter__(self):
         return self
