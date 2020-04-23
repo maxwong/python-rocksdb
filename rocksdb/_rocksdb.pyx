@@ -2229,28 +2229,28 @@ cdef class Snapshot(object):
             with nogil:
                 self.db.db.ReleaseSnapshot(self.ptr)
 
-
+validIterHandlers = 0
+                
 @cython.internal
 cdef class BaseIterator(object):
     cdef iterator.Iterator* ptr
     cdef DB db
     cdef ColumnFamilyHandle handle
-    cdef size_t validHandlers
 
     def __cinit__(self, DB db, ColumnFamilyHandle handle = None):
+        global validIterHandlers
         self.db = db
         self.ptr = NULL
         self.handle = handle
-        self.validHandlers += 1
-        print("Iterator created %s" % (self.validHandlers))
-
+        validIterHandlers += 1
+        print("Iterator created %s" % (validIterHandlers,))
 
     def __dealloc__(self):
-       print("Iterator released %s" % (self.validHandlers))
-       if not self.ptr == NULL:
-           del self.ptr
-           self.validHandlers -= 1
-
+        global validIterHandlers
+        if not self.ptr == NULL:
+            del self.ptr
+            print("Iterator released %s" % (validIterHandlers,))
+            validIterHandlers -= 1
 
     def __iter__(self):
         return self
