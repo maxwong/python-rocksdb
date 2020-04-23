@@ -2242,6 +2242,7 @@ cdef class BaseIterator(object):
         self.handle = handle
 
     def __dealloc__(self):
+        print("Iterator released")
         if not self.ptr == NULL:
             del self.ptr
 
